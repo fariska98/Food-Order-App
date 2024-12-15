@@ -77,9 +77,12 @@ class DishItem extends StatelessWidget {
                         '${dish.currency ?? ''} ${dish.price ?? ''}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        '${dish.calories ?? ''} calories',
-                        style:  TextStyleClass.manrope400TextStyle(14, ColorClass.black)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text(
+                          '${dish.calories ?? ''} calories',
+                          style:  TextStyleClass.manrope400TextStyle(14, ColorClass.black)
+                        ),
                       ),
                     ],
                   ),

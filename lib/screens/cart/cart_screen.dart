@@ -16,7 +16,7 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => AppUtils.navigateTo(context,const HomeScreen()),
         ),
         title: const Text('Order Summary'),
       ),
@@ -123,7 +123,8 @@ class CartScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Order Confirmation'),
+        title:   Text('Order Confirmation',
+        style: TextStyleClass.manrope600TextStyle(18, ColorClass.black),),
         content: const Text('Order successfully placed'),
         actions: [
           TextButton(
@@ -154,6 +155,7 @@ class CartItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Veg/Non-veg indicator
