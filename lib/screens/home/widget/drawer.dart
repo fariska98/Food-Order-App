@@ -11,85 +11,90 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginProvider = Provider.of<LoginProvider>(context);
-    final userData = loginProvider.getCurrentUserData();
-    String formatUserId(dynamic uid) {
-      if (uid == null) return '';
-      String uidString = uid.toString();
-      if (uidString.isEmpty) return '';
-      return uidString.length >= 5 ? uidString.substring(0, 5) : uidString;
-    }
-
     return Drawer(
       child: Column(
         children: [
-          // User Info Header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(top: 50, bottom: 20),
-            decoration: const BoxDecoration(
-              color: ColorClass.primaryColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
-            ),
-            child: Column(
-              children: [
-                // Profile Image
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
+          Consumer<LoginProvider>(
+            builder: (context, loginProvider, _) {
+              return FutureBuilder<Map<String, dynamic>>(
+                future: loginProvider.getCurrentUserData(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final userData = snapshot.data!;
+                  String formatUserId(dynamic uid) {
+                    if (uid == null) return '';
+                    String uidString = uid.toString();
+                    if (uidString.isEmpty) return '';
+                    return uidString.length >= 5 ? uidString.substring(0, 5) : uidString;
+                  }
+
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(top: 50, bottom: 20),
+                    decoration: const BoxDecoration(
+                      color: ColorClass.primaryColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
                     ),
-                  ),
-                  child: ClipOval(
-                    child: userData['photoURL'] != null &&
-                            userData['photoURL']!.isNotEmpty
-                        ? Image.network(
-                            userData['photoURL']!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.white,
-                                child: const Icon(
-                                  Icons.person,
-                                  size: 40,
-                                  color: ColorClass.primaryColor,
-                                ),
-                              );
-                            },
-                          )
-                        : Container(
-                            color: Colors.white,
-                            child: const Icon(
-                              Icons.person,
-                              size: 40,
-                              color: ColorClass.primaryColor,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
                             ),
                           ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // User Name
-                Text(
-                  userData['displayName'] ?? userData['phoneNumber'] ?? 'User',
-                  style:
-                      TextStyleClass.manrope500TextStyle(18, ColorClass.white),
-                ),
-                const SizedBox(height: 8),
-                // User ID
-                Text(
-                  'ID : ${formatUserId(userData['uid'])}',
-                  style:
-                      TextStyleClass.manrope400TextStyle(14, ColorClass.white),
-                ),
-              ],
-            ),
+                          child: ClipOval(
+                            child: userData['photoURL'] != null && userData['photoURL']!.isNotEmpty
+                                ? Image.network(
+                                    userData['photoURL']!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.white,
+                                        child: const Icon(
+                                          Icons.person,
+                                          size: 40,
+                                          color: ColorClass.primaryColor,
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : Container(
+                                    color: Colors.white,
+                                    child: const Icon(
+                                      Icons.person,
+                                      size: 40,
+                                      color: ColorClass.primaryColor,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          userData['displayName'] ?? userData['phoneNumber'] ?? 'User',
+                          style: TextStyleClass.manrope500TextStyle(18, ColorClass.white),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'ID : ${formatUserId(userData['uid'])}',
+                          style: TextStyleClass.manrope400TextStyle(14, ColorClass.white),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           ),
 
           // Logout Button

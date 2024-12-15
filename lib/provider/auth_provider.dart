@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  
+  static const String _userKey = 'user_data';
   User? _user;
   bool _isLoading = false;
   String? _error;
@@ -66,6 +69,7 @@ class LoginProvider with ChangeNotifier {
           await _auth.signInWithCredential(credential);
       
       _user = userCredential.user;
+      await _saveUserDataLocally(); // Save after successful sign in
       _setLoading(false);
       return true;
 
@@ -137,6 +141,7 @@ class LoginProvider with ChangeNotifier {
           await _auth.signInWithCredential(credential);
       
       _user = userCredential.user;
+       await _saveUserDataLocally(); 
       _setLoading(false);
       return true;
 
@@ -154,6 +159,7 @@ class LoginProvider with ChangeNotifier {
       await Future.wait([
         _auth.signOut(),
         _googleSignIn.signOut(),
+        _clearUserDataLocally(),
       ]);
       _user = null;
       _setLoading(false);
@@ -164,13 +170,48 @@ class LoginProvider with ChangeNotifier {
   }
 
   // Get current user data
-  Map<String, dynamic> getCurrentUserData() {
-    return {
-      'uid': _user?.uid ?? '',
-      'displayName': _user?.displayName ?? '',
-      'email': _user?.email ?? '',
-      'phoneNumber': _user?.phoneNumber ?? '',
-      'photoURL': _user?.photoURL ?? '',
-    };
+  Future<Map<String, dynamic>> getCurrentUserData() async {
+    if (_user != null) {
+      return {
+        'uid': _user?.uid ?? '',
+        'displayName': _user?.displayName ?? '',
+        'email': _user?.email ?? '',
+        'phoneNumber': _user?.phoneNumber ?? '',
+        'photoURL': _user?.photoURL ?? '',
+      };
+    }
+    return await loadUserDataLocally();
+  }
+
+
+
+   Future<void> _saveUserDataLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_user != null) {
+      final userData = {
+        'uid': _user?.uid,
+        'displayName': _user?.displayName,
+        'email': _user?.email,
+        'phoneNumber': _user?.phoneNumber,
+        'photoURL': _user?.photoURL,
+      };
+      await prefs.setString(_userKey, jsonEncode(userData));
+    }
+  }
+
+  // Load user data from SharedPreferences
+  Future<Map<String, dynamic>> loadUserDataLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userDataString = prefs.getString(_userKey);
+    if (userDataString != null) {
+      return jsonDecode(userDataString);
+    }
+    return {};
+  }
+
+  // Clear user data from SharedPreferences
+  Future<void> _clearUserDataLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_userKey);
   }
 }
