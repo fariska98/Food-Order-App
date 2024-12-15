@@ -128,7 +128,7 @@ class AppUtils {
 
   /// Navigate to a new screen/widget
   static navigateTo(BuildContext context, Widget widget) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget));
   }
 
   static showInSnackBarNormal(String message, BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:zartek_test/constants/image_class.dart';
 import 'package:zartek_test/screens/home/home_screen.dart';
 
 import 'package:zartek_test/screens/login/login_screen.dart';
+import 'package:zartek_test/utils/app_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,16 +47,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (mounted) {
       if (user != null) {
       
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+       AppUtils.navigateTo(context,const HomeScreen());
       } else {
         
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AuthScreen()),
-        );
+       AppUtils.navigateTo(context,const AuthScreen());
       }
     }
   }

@@ -16,10 +16,7 @@ class AuthScreen extends StatelessWidget {
     final authProvider = context.read<LoginProvider>();
     final success = await authProvider.signInWithGoogle(context);
     if (success && context.mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+    AppUtils.navigateTo(context,const HomeScreen());
     }
   }
 
@@ -36,10 +33,7 @@ class AuthScreen extends StatelessWidget {
               (otp) async {
                 final success = await authProvider.verifyPhoneCode(otp);
                 if (success && context.mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
+                 AppUtils.navigateTo(context,const HomeScreen());
                 }
               },
             );

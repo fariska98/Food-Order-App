@@ -8,6 +8,7 @@ import 'package:zartek_test/provider/cart_provider.dart';
 import 'package:zartek_test/screens/cart/cart_screen.dart';
 import 'package:zartek_test/screens/home/widget/category_section.dart';
 import 'package:zartek_test/screens/home/widget/drawer.dart';
+import 'package:zartek_test/utils/app_utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -61,10 +62,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: IconButton(
                   icon: const Icon(Icons.shopping_cart,color: ColorClass.grey,),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CartScreen()),
-                    );
+                    AppUtils.navigateTo(context,const CartScreen());
                   },
                 ),
               ),
